@@ -1,0 +1,210 @@
+{
+    "comment1": "// See https://go.microsoft.com/fwlink/?LinkId=733558",
+    "comment2": "// for the documentation about the tasks.json format",
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build project",
+            "type": "shell",
+            "command": "g++",
+            "args": [
+                "-fdiagnostics-color=always",
+                "-g",
+                "-Wall",
+                "-Wextra",
+                "-Wdouble-promotion",
+                "-std=c++20",
+                // "-O2",
+                "-o",
+                "\"${workspaceFolder}\"/bin/main",
+                "-I",
+                "\"${workspaceFolder}\"/headers",
+                "-ggdb",
+                "\"${workspaceFolder}\"/source/*.cpp",
+                // "\"${workspaceFolder}\"/source/MetalGPUManager.mm",
+                "-I",
+                "/opt/homebrew/include",
+                "-L",
+                "/opt/homebrew/lib",
+                "-lsfml-graphics",
+                "-lsfml-window",
+                "-lsfml-system",
+                "-fexperimental-library",
+                    // "-Ofast",                       // O3 + unsafe FP opts
+                    // "-flto",                        // link-time optimization
+                    // "-DNDEBUG",                     // disable asserts
+                    // "-fomit-frame-pointer",         // omit frame pointer for optimization
+                "-O3", 
+                "-ffast-math",
+                "-march=armv8-a+simd",          // target Apple Silicon class CPUs
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "detail": "compiler: /usr/bin/g++",
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "options": {
+                "cwd": "${fileDirname}"
+            }
+        },
+        {
+            "label": "build test project",
+            "type": "shell",
+            "command": "g++",
+            "args": [
+                "-std=c++20",
+                "-o",
+                "\"${workspaceFolder}\"/bin/testmain",
+                "-I",
+                "\"${workspaceFolder}\"/headers",
+                "-I",
+                "/usr/local/lib/googletest/googletest/googletest/include",
+                "-I",
+                "/usr/local/lib/googletest/googletest/googletest",
+                "-ggdb",
+                "\"${workspaceFolder}\"/tests/*.cpp",
+                "/usr/local/lib/googletest/googletest/googletest/src/gtest-all.cc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": [],
+            "options": {
+                "cwd": ""
+            }
+        },
+        {
+            "label": "run",
+            "type": "shell",
+            "command": "./bin/main",
+            "problemMatcher": []
+        },
+        {
+            "label": "run tests",
+            "type": "shell",
+            "command": "./bin/testmain",
+            "problemMatcher": []
+        },
+        {
+            "label": "build emergent project",
+            "type": "shell",
+            "command": "g++",
+            "args": [
+                "-fdiagnostics-color=always",
+                "-g",
+                // "-Wall",
+                // "-Wextra",
+                "-std=c++20",
+                "-O2",
+                "-o",
+                "\"${workspaceFolder}\"/bin/emergent_main",
+                "-I",
+                "\"${workspaceFolder}\"/headers",
+                "-ggdb",
+                "\"${workspaceFolder}\"/source/ModernMain.cpp",
+                "\"${workspaceFolder}\"/source/SimulationSettings.cpp",
+                "\"${workspaceFolder}\"/source/Agent.cpp",
+                "\"${workspaceFolder}\"/source/NewGenetics.cpp",
+                "\"${workspaceFolder}\"/source/TrailMap.cpp",
+                "\"${workspaceFolder}\"/source/NewPhysarumSimulation.cpp",
+                "\"${workspaceFolder}\"/source/UIManager.cpp",
+                "-I",
+                "/opt/homebrew/include",
+                "-L",
+                "/opt/homebrew/lib",
+                "-lsfml-graphics",
+                "-lsfml-window",
+                "-lsfml-system"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "detail": "Build emergent genetics-driven Physarum simulation",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": ["$gcc"]
+        },
+        {
+            "label": "build project with Metal GPU",
+            "type": "shell",
+            "command": "g++",
+      "args": [
+        "-fdiagnostics-color=always",
+        "-g",
+        // "-Wall",
+        // "-Wextra",
+        // "-Wdouble-promotion",
+        "-Wno-conversion",
+        "-std=c++20",
+        "-O2",
+        "-o",
+        "${workspaceFolder}/bin/main_gpu",
+        "-I",
+        "${workspaceFolder}/headers",
+        "-ggdb",
+        "${workspaceFolder}/source/*.cpp",
+        // "${workspaceFolder}/source/MetalGPUManager.mm",
+        "-I",
+        "/opt/homebrew/include",
+        "-L",
+        "/opt/homebrew/lib",
+        "-lsfml-graphics",
+        "-lsfml-window",
+        "-lsfml-system",
+        "-framework",
+        "Metal",
+        "-framework",
+        "MetalKit",
+        "-framework",
+        "Foundation"
+      ],
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "detail": "Build with Metal GPU acceleration (Mac only)",
+            "options": {
+                "cwd": "${fileDirname}"
+            },
+            "problemMatcher": ["$gcc"]
+        },
+        {
+            "label": "run GPU project",
+            "type": "shell",
+            "command": "./bin/main_gpu",
+            "dependsOn": "build project with Metal GPU",
+            "detail": "Run the GPU-accelerated version",
+            "problemMatcher": []
+        },
+        {
+            "label": "run emergent project",
+            "type": "shell",
+            "command": "./bin/emergent_main",
+            "problemMatcher": []
+        },
+        {
+            "label": "run on windows cmd shell ",
+            "type": "shell",
+            "command": "\"${workspaceFolder}/bin/main\"",
+            "options": {
+                "cwd": "bin"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "run tests on windows cmd shell ",
+            "type": "shell",
+            "command": "\"${workspaceFolder}/bin/testmain\"",
+            "options": {
+                "cwd": "bin"
+            },
+            "problemMatcher": []
+        }
+    ]
+}

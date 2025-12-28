@@ -1,0 +1,6 @@
+bin/*
+.vscode/*
+*.exe
+*.json
+!tasks.json
+./bin/*
